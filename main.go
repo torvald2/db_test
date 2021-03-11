@@ -25,7 +25,6 @@ func main() {
 	for i := 1; i < threads; i++ {
 		wg.Add(1)
 		go func() {
-			defer wg.Done()
 			start_time := time.Now()
 			db, err := sql.Open("postgres", os.Args[1])
 			if err != nil {
