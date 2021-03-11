@@ -6,6 +6,7 @@ import (
 	"log"
 	"os"
 	"strconv"
+	"sync"
 	"time"
 )
 
@@ -15,13 +16,16 @@ func timeTrack(start time.Time, name string) {
 }
 
 func main() {
+	var wg sync.WaitGroup
 	threads, err := strconv.Atoi(os.Args[2])
 	if err != nil {
 		panic("Bad threads")
 	}
 
 	for i := 1; i < threads; i++ {
+		wg.Add(1)
 		go func() {
+			defer wg.Done()
 			start_time := time.Now()
 			db, err := sql.Open("postgres", os.Args[1])
 			if err != nil {
@@ -39,4 +43,5 @@ func main() {
 		}()
 
 	}
+	wg.Wait()
 }
